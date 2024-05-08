@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import AdminInstructor from "./AdminInstructor";
+import { UserIcon } from "@heroicons/react/24/outline";
 
 function AdminContent() {
   const [open, setOpen] = useState(false);
@@ -13,7 +14,10 @@ function AdminContent() {
         onClick={() => setOpen(true)}
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
       >
-        Instructors
+        <div className="flex items-center">
+          <UserIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+          <span>Instructors</span>
+        </div>
       </button>
 
       {/* The dialog */}

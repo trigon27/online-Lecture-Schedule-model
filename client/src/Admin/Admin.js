@@ -4,7 +4,6 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logout from "../components/Logout";
 import AdminContent from "./AdminContent";
-import CoursesAdmin from "./AdminCourse";
 import AdminCourse from "./AdminCourse";
 
 function Admin() {
@@ -20,7 +19,7 @@ function Admin() {
                     <div className="flex-shrink-0">
                       <img
                         className="h-8 w-8"
-                        src="https://www.euroschoolindia.com/wp-content/uploads/2023/08/study-rewards.jpg"
+                        src="https://cdn-icons-png.flaticon.com/512/4334/4334830.png"
                         alt="Your Company"
                       />
                     </div>
@@ -64,9 +63,8 @@ function Admin() {
 
         <header className="bg-white shadow">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900">
-              Dashboard <AdminContent></AdminContent>
-            </h2>
+            <span className="text-xl mx-5">Dashboard</span>
+            <AdminContent></AdminContent>
           </div>
         </header>
         <main>
