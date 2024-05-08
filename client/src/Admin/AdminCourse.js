@@ -124,6 +124,7 @@ const AdminCourse = ({ user }) => {
                   src={course.image}
                   alt={course.name}
                   className="w-full h-full object-cover"
+                  style={{ objectFit: "contain" }}
                 />
               </div>
               <div className="p-4">

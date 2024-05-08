@@ -64,23 +64,35 @@ module.exports.getUserSchedule = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-// Assuming you have a route like this
 module.exports.checkAvailable = async (req, res, next) => {
-  const { username, date } = req.body;
+  const { instructor, date } = req.body;
+  console.log(date);
+  console.log(instructor);
 
   try {
-    const existingSchedule = await CourseSchedule.findOne({
-      instructor: username,
-      date: new Date(date),
-    });
+    // Convert the date string to a Date object
+    const requestedDate = new Date(date);
 
-    if (existingSchedule) {
-      return res
-        .status(409)
-        .json({ error: "Instructor is already busy on this date." });
+    // Find all schedules for the instructor
+    const schedules = await CourseSchedule.find({ instructor: instructor });
+
+    // Check for overlapping schedules
+    for (const schedule of schedules) {
+      const scheduleDate = new Date(schedule.date);
+
+      // Check if the requested date falls within the range of any existing schedule
+      if (
+        requestedDate.getDate() === scheduleDate.getDate() &&
+        requestedDate.getMonth() === scheduleDate.getMonth() &&
+        requestedDate.getFullYear() === scheduleDate.getFullYear()
+      ) {
+        return res
+          .status(409)
+          .json({ error: "Instructor is already busy on this date." });
+      }
     }
 
+    // If no overlapping schedules found, instructor is available
     return res
       .status(200)
       .json({ message: "Instructor is available on this date." });

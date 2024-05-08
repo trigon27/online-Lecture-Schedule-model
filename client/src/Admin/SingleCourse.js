@@ -8,6 +8,7 @@ const SingleCourse = () => {
   const [instructors, setInstructors] = useState([]);
   const [selectedInstructor, setSelectedInstructor] = useState("");
   const [schedule, setSchedule] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const [lectureData, setLectureData] = useState({
     instructor: "",
     date: "",
@@ -76,23 +77,33 @@ const SingleCourse = () => {
     };
 
     try {
-      // Add the schedule to the backend
-      await axios.post("http://localhost:4000/Baddschedule", scheduleData);
-
-      // Fetch the updated schedule from the backend
-      const fetchScheduleResponse = await axios.get(
-        "http://localhost:4000/Bgetschedule",
-        { params: { courseName } }
+      const availabilityResponse = await axios.post(
+        "http://localhost:4000/BcheckInstructorAvailability",
+        scheduleData
       );
-      setSchedule(fetchScheduleResponse.data.schedules);
+      if (availabilityResponse.status === 200) {
+        console.log(availabilityResponse.status);
+        // Add the schedule to the backend
+        await axios.post("http://localhost:4000/Baddschedule", scheduleData);
 
-      // Reset the lecture data after successful addition
-      setLectureData({
-        instructor: "",
-        date: "",
-        lecture: "",
-        location: "",
-      });
+        // Fetch the updated schedule from the backend
+        const fetchScheduleResponse = await axios.get(
+          "http://localhost:4000/Bgetschedule",
+          { params: { courseName } }
+        );
+        setSchedule(fetchScheduleResponse.data.schedules);
+
+        // Reset the lecture data after successful addition
+        setLectureData({
+          instructor: "",
+          date: "",
+          lecture: "",
+          location: "",
+        });
+      } else {
+        console.log("busy instructor");
+        setErrorMessage("Instructor already book choose another time ");
+      }
     } catch (error) {
       console.error("Error adding schedule:", error);
     }
@@ -181,6 +192,9 @@ const SingleCourse = () => {
                 Schedule Lecture
               </button>
             </form>
+            {errorMessage && (
+              <p className="text-red-500 text-center">{errorMessage}</p>
+            )}
           </div>
 
           {/* Right Section - Schedules */}

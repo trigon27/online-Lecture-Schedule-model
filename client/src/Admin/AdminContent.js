@@ -13,7 +13,7 @@ function AdminContent() {
         onClick={() => setOpen(true)}
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
       >
-        Open Admin Content
+        Instructors
       </button>
 
       {/* The dialog */}
@@ -34,7 +34,7 @@ function AdminContent() {
               </button>
             </div>
             <div className="p-4">
-              <h1 className="text-xl font-bold">Panel Title</h1>
+              <h1 className="text-xl font-bold">Register Instructors</h1>
               <AdminInstructor></AdminInstructor>
             </div>
           </div>

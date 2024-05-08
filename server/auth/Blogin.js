@@ -29,15 +29,7 @@ router.post("/Blogin", async (req, res) => {
 
     // Set session cookie
     res.cookie("isLoggedIn", true);
-
-    // Redirect based on user role
-    if (isAdmin) {
-      // Redirect to admin dashboard
-      res.json({ isAdmin: true });
-    } else {
-      // Redirect to normal user dashboard
-      res.json({ isAdmin: false });
-    }
+    res.json({ username: user.userName, isAdmin: user.isAdmin });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Internal server error" });

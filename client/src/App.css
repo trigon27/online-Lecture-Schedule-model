@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.schedule {
+  background-color: #d7dce6; /* Off-white color */
+}

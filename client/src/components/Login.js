@@ -36,7 +36,9 @@ function Login() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Response data:", data);
         localStorage.setItem("login", data.isAdmin ? "admin" : "user");
+        localStorage.setItem("secret-key", JSON.stringify(data));
         navigate(data.isAdmin ? "/Admin" : "/");
       } else {
         setErrorMessage("Incorrect Username or Password");
@@ -55,7 +57,7 @@ function Login() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+            src="https://www.euroschoolindia.com/wp-content/uploads/2023/08/study-rewards.jpg"
             alt="Your Company"
           />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
