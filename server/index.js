@@ -5,7 +5,9 @@ const mongoose = require("mongoose");
 const port = 4000;
 const Bregistration = require("./auth/Bregistration");
 const Blogin = require("./auth/Blogin");
-
+const users = require("./controller/Users");
+const Course = require("./Routes/Course");
+const Schedule = require("./Routes/Schedule");
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
@@ -22,6 +24,9 @@ app.get("/", (req, res) => {
 });
 app.use("/", Bregistration);
 app.use("/", Blogin);
+app.use("/", users);
+app.use("/", Course);
+app.use("/", Schedule);
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
