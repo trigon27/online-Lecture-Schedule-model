@@ -1,54 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
+  useEffect(() => {
+    // Check if user is already logged in
+    const isLoggedIn = localStorage.getItem("login");
+    if (isLoggedIn) {
+      const isAdmin = isLoggedIn === "admin";
+      navigate(isAdmin ? "/Admin" : "/");
+    }
+  }, []);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleChangePassword = (e) => {
+    setPassword(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send login credentials to the backend
-      const response = await fetch("/api/login", {
+      const response = await fetch("http://localhost:4000/Blogin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        // Check if the user is an admin or a normal user
-        if (data.isAdmin) {
-          // Redirect to admin dashboard
-          navigate("/Admin");
-        } else {
-          // Redirect to normal user dashboard
-          navigate("Instructor");
-        }
+        localStorage.setItem("login", data.isAdmin ? "admin" : "user");
+        navigate(data.isAdmin ? "/Admin" : "/");
       } else {
-        // Handle login error
-        console.error("Login failed");
+        setErrorMessage("Incorrect Username or Password");
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000); // Clear error message after 3 seconds
       }
     } catch (error) {
       console.error("Login error:", error);
     }
   };
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" // have to change img
+            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
             alt="Your Company"
           />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -57,7 +64,7 @@ function Login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -72,6 +79,8 @@ function Login() {
                   type="email"
                   autoComplete="email"
                   required
+                  value={email}
+                  onChange={handleChangeEmail}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -91,8 +100,9 @@ function Login() {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
                   required
+                  value={password}
+                  onChange={handleChangePassword}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -106,7 +116,20 @@ function Login() {
                 Sign in
               </button>
             </div>
+            {errorMessage && (
+              <p className="text-red-500 text-center">{errorMessage}</p>
+            )}
           </form>
+
+          <p className="mt-10 text-center text-sm text-gray-500">
+            New User?{" "}
+            <Link
+              to="/register"
+              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            >
+              sign up
+            </Link>
+          </p>
         </div>
       </div>
     </>
