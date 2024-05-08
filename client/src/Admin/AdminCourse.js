@@ -104,7 +104,7 @@ const AdminCourse = ({ user }) => {
         </button>
       </form>
 
-      <div className="w-full mt-8 flex flex-wrap justify-around">
+      <div className="w-full mt-8  flex flex-wrap justify-around">
         {courses.map((course) => (
           <div
             key={course._id}
