@@ -4,7 +4,7 @@ import axios from "axios";
 
 const SingleCourse = () => {
   const { courseId } = useParams();
-  const [courseName, setCourseName] = useState("Dummy Course");
+  const [courseName, setCourseName] = useState("");
   const [instructors, setInstructors] = useState([]);
   const [selectedInstructor, setSelectedInstructor] = useState("");
   const [schedule, setSchedule] = useState([]);
@@ -16,28 +16,41 @@ const SingleCourse = () => {
   });
 
   useEffect(() => {
-    const fetchCourseName = async () => {
+    const fetchCourseData = async () => {
       try {
         if (courseId) {
-          const response = await axios.get(
+          const courseNameResponse = await axios.get(
             `http://localhost:4000/Bgetcoursename/${courseId}`
           );
-          setCourseName(response.data.courseName);
+          setCourseName(courseNameResponse.data.courseName);
+
+          const instructorsResponse = await axios.get(
+            "http://localhost:4000/Busers"
+          );
+          setInstructors(instructorsResponse.data);
         }
       } catch (error) {
-        console.error("Error fetching course name:", error);
+        console.error("Error fetching course data:", error);
       }
     };
-    fetchCourseName();
-  }, [courseId]);
 
+    fetchCourseData();
+  }, [courseId]);
   useEffect(() => {
-    // Fetch instructor data from the backend
-    fetch("http://localhost:4000/Busers")
-      .then((response) => response.json())
-      .then((data) => setInstructors(data))
-      .catch((error) => console.error("Error fetching instructors:", error));
-  }, []);
+    const fetchScheduleData = async () => {
+      try {
+        const fetchScheduleResponse = await axios.get(
+          "http://localhost:4000/Bgetschedule",
+          { params: { courseName } }
+        );
+        console.log("Fetched schedules:", fetchScheduleResponse.data.schedules);
+        setSchedule(fetchScheduleResponse.data.schedules);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchScheduleData();
+  });
 
   const handleInstructorSelection = (e) => {
     setSelectedInstructor(e.target.value);
@@ -61,44 +74,41 @@ const SingleCourse = () => {
       instructor: selectedInstructor,
       location: lectureData.location,
     };
+
     try {
-      const response = await axios.post(
+      // Add the schedule to the backend
+      const addScheduleResponse = await axios.post(
         "http://localhost:4000/Baddschedule",
         scheduleData
       );
-      console.log("Schedule added successfully:", response.data);
-      setSchedule([...schedule, response.data]);
+      console.log("Schedule added successfully:", addScheduleResponse.data);
+
+      // Fetch the updated schedule from the backend
+      const fetchScheduleResponse = await axios.get(
+        "http://localhost:4000/Bgetschedule",
+        { params: { courseName } }
+      );
+      console.log("Fetched schedules:", fetchScheduleResponse.data.schedules);
+      setSchedule(fetchScheduleResponse.data.schedules);
+
+      // Reset the lecture data after successful addition
+      setLectureData({
+        instructor: "",
+        date: "",
+        lecture: "",
+        location: "",
+      });
     } catch (error) {
       console.error("Error adding schedule:", error);
     }
-    setLectureData({
-      instructor: "",
-      date: "",
-      lecture: "",
-      location: "",
-    });
   };
-
-  useEffect(() => {
-    const fetchSchedule = async () => {
-      try {
-        const response = await axios.get("http://localhost:4000/Baddschedule", {
-          params: { courseName },
-        });
-        setSchedule(response.data.schedule);
-      } catch (error) {
-        console.error("Error fetching schedule:", error);
-      }
-    };
-    fetchSchedule();
-  }, [courseName]);
-  console.log(instructors);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md">
         <h1 className="text-3xl font-bold mb-4">{courseName}</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Select Instructor */}
           <div>
             <label htmlFor="instructor" className="block font-semibold">
               Select Instructor:
@@ -114,15 +124,14 @@ const SingleCourse = () => {
               <option value="" disabled>
                 Choose an instructor
               </option>
-
-              {instructors &&
-                instructors.map((instructor, index) => (
-                  <option key={index} value={instructor.id}>
-                    {instructor.userName}
-                  </option>
-                ))}
+              {instructors.map((instructor) => (
+                <option key={instructor.id} value={instructor.id}>
+                  {instructor.userName}
+                </option>
+              ))}
             </select>
           </div>
+          {/* Date Input */}
           <div>
             <label htmlFor="date" className="block font-semibold">
               Select Date:
@@ -137,6 +146,7 @@ const SingleCourse = () => {
               required
             />
           </div>
+          {/* Lecture Name Input */}
           <div>
             <label htmlFor="lecture" className="block font-semibold">
               Lecture Name:
@@ -151,6 +161,7 @@ const SingleCourse = () => {
               required
             />
           </div>
+          {/* Location Input */}
           <div>
             <label htmlFor="location" className="block font-semibold">
               Location:
@@ -165,6 +176,7 @@ const SingleCourse = () => {
               required
             />
           </div>
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
@@ -172,17 +184,27 @@ const SingleCourse = () => {
             Schedule Lecture
           </button>
         </form>
+        {/* Display Schedules */}
         <div className="mt-8 space-y-4">
-          {schedule.map((item) => (
-            <div key={item._id} className="p-4 bg-white shadow-md rounded-md">
-              <h2 className="text-lg font-semibold">{item.lecture}</h2>
-              <p className="text-sm">Instructor: {item.instructor}</p>
-              <p className="text-sm">
-                Date: {new Date(item.date).toLocaleDateString()}
-              </p>
-              <p className="text-sm">Location: {item.location}</p>
+          {schedule.length > 0 ? (
+            <div className="mt-8 space-y-4">
+              {schedule.map((item) => (
+                <div
+                  key={item._id}
+                  className="p-4 bg-white shadow-md rounded-md"
+                >
+                  <h2 className="text-lg font-semibold">{item.lecture}</h2>
+                  <p className="text-sm">Instructor: {item.instructor}</p>
+                  <p className="text-sm">
+                    Date: {new Date(item.date).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm">Location: {item.location}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <p>No schedules found for this course.</p>
+          )}
         </div>
       </div>
     </div>
