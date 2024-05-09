@@ -36,42 +36,40 @@ Follow these steps to set up and run the Course Management System locally:
 
 2. **Install dependencies**:
 
-   \`\`\`bash
+ 
    # Install frontend dependencies
-   cd frontend
-   npm install
+   -cd frontend
+   -npm install
 
    # Install backend dependencies
-   cd ../backend
-   npm install
-   \`\`\`
+  - cd ../backend
+  - npm install
+   
 
 3. **Set up environment variables**:
 
    Create a \`.env\` file in the \`backend\` directory and add the following variables:
 
-   \`\`\`
-   PORT=4000
-   MONGODB_URI=<your-mongodb-uri>
-   \`\`\`
+  
+   -PORT=4000
+   -MONGODB_URI=<your-mongodb-uri>
+   
 
 4. **Start the backend server**:
 
-   \`\`\`bash
-   cd backend
-   npm start
-   \`\`\`
+   
+   -cd backend
+   -npm start
+  
 
 5. **Start the frontend development server**:
 
-   \`\`\`bash
-   cd frontend
-   npm start
-   \`\`\`
+   
+   -cd frontend
+   -npm start
+ 
 
 6. **Access the application**:
 
    Visit \`http://localhost:3000\` in your web browser to access the Course Management System.
 
-
-\`\`\`
