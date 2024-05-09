@@ -23,7 +23,7 @@ const Instructor = () => {
     const fetchUserSchedules = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/Bgetuserschedule?currUser=${currUser}`
+          `/Bgetuserschedule?currUser=${currUser}`
         );
         setSchedules(response.data.schedules);
       } catch (error) {

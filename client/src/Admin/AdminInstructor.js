@@ -5,7 +5,7 @@ function AdminInstructor() {
 
   useEffect(() => {
     // Fetch instructor data from the backend
-    fetch("http://localhost:4000/Busers")
+    fetch("/Busers")
       .then((response) => response.json())
       .then((data) => setInstructors(data))
       .catch((error) => console.error("Error fetching instructors:", error));

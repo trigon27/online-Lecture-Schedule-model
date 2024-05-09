@@ -23,7 +23,7 @@ function Registration() {
 
     try {
       // Send registration request to backend
-      const response = await axios.post("http://localhost:4000/Bregister", {
+      const response = await axios.post("/Bregister", {
         userName,
         email,
         password,

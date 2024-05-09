@@ -21,13 +21,11 @@ const SingleCourse = () => {
       try {
         if (courseId) {
           const courseNameResponse = await axios.get(
-            `http://localhost:4000/Bgetcoursename/${courseId}`
+            `/Bgetcoursename/${courseId}`
           );
           setCourseName(courseNameResponse.data.courseName);
 
-          const instructorsResponse = await axios.get(
-            "http://localhost:4000/Busers"
-          );
+          const instructorsResponse = await axios.get("/Busers");
           setInstructors(instructorsResponse.data);
         }
       } catch (error) {
@@ -41,10 +39,9 @@ const SingleCourse = () => {
   useEffect(() => {
     const fetchScheduleData = async () => {
       try {
-        const fetchScheduleResponse = await axios.get(
-          "http://localhost:4000/Bgetschedule",
-          { params: { courseName } }
-        );
+        const fetchScheduleResponse = await axios.get("/Bgetschedule", {
+          params: { courseName },
+        });
         setSchedule(fetchScheduleResponse.data.schedules);
       } catch (error) {
         console.error("Error fetching schedule data:", error);
@@ -78,19 +75,18 @@ const SingleCourse = () => {
 
     try {
       const availabilityResponse = await axios.post(
-        "http://localhost:4000/BcheckInstructorAvailability",
+        "/BcheckInstructorAvailability",
         scheduleData
       );
       if (availabilityResponse.status === 200) {
         console.log(availabilityResponse.status);
         // Add the schedule to the backend
-        await axios.post("http://localhost:4000/Baddschedule", scheduleData);
+        await axios.post("/Baddschedule", scheduleData);
 
         // Fetch the updated schedule from the backend
-        const fetchScheduleResponse = await axios.get(
-          "http://localhost:4000/Bgetschedule",
-          { params: { courseName } }
-        );
+        const fetchScheduleResponse = await axios.get("/Bgetschedule", {
+          params: { courseName },
+        });
         setSchedule(fetchScheduleResponse.data.schedules);
 
         // Reset the lecture data after successful addition

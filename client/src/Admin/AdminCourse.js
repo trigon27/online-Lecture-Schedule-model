@@ -22,7 +22,7 @@ const AdminCourse = ({ user }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:4000/Baddcourse", {
+      const response = await axios.post("/Baddcourse", {
         ...courseData,
       });
       setCourseData({
@@ -38,7 +38,7 @@ const AdminCourse = ({ user }) => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/Bgetcourse");
+      const response = await axios.get("/Bgetcourse");
       setCourses(response.data.courses);
     } catch (error) {
       console.error("Error fetching courses:", error);
