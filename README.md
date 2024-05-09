@@ -29,17 +29,17 @@ Follow these steps to set up and run the Course Management System locally:
 
 1. **Clone the repository**:
 
-   \`\`\`bash
-   git clone <repository-url>
-   cd course-management-system
-   \`\`\`
+  
+  - git clone <repository-url>
+  - cd online-lecture-schedule-model
+  
 
 2. **Install dependencies**:
 
  
    # Install frontend dependencies
-   -cd frontend
-   -npm install
+   - cd frontend
+   - npm install
 
    # Install backend dependencies
   - cd ../backend
@@ -51,22 +51,22 @@ Follow these steps to set up and run the Course Management System locally:
    Create a \`.env\` file in the \`backend\` directory and add the following variables:
 
   
-   -PORT=4000
-   -MONGODB_URI=<your-mongodb-uri>
+   - PORT=4000
+   - MONGODB_URI=<your-mongodb-uri>
    
 
 4. **Start the backend server**:
 
    
-   -cd backend
-   -npm start
+   - cd backend
+   - npm start
   
 
 5. **Start the frontend development server**:
 
    
-   -cd frontend
-   -npm start
+   - cd frontend
+   - npm start
  
 
 6. **Access the application**:
